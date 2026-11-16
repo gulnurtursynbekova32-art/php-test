@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHP тілінен тест</title>
+<style>
+* {box-sizing:border-box}
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg,#172554,#4f46e5);
+  margin:0;
+  padding:25px 12px;
+  color:#1e293b;
+}
+.container {
+  max-width:850px;
+  margin:auto;
+  background:white;
+  padding:30px;
+  border-radius:18px;
+}
+h1 {text-align:center;color:#3730a3}
+.subtitle {text-align:center;color:#64748b}
+.info {
+  background:#eef2ff;
+  padding:15px;
+  border-radius:10px;
+  margin:20px 0;
+}
+.question {
+  border:1px solid #ddd;
+  border-radius:12px;
+  padding:18px;
+  margin:15px 0;
+}
+.question h3 {margin-top:0}
+label {
+  display:block;
+  padding:10px;
+  margin:6px 0;
+  background:#f1f5f9;
+  border-radius:8px;
+  cursor:pointer;
+}
+label:hover {background:#e0e7ff}
+input {margin-right:8px}
+button {
+  background:#4f46e5;
+  color:white;
+  border:0;
+  border-radius:10px;
+  padding:14px 25px;
+  font-size:17px;
+  cursor:pointer;
+  margin-top:15px;
+}
+button:hover {background:#3730a3}
+#result {
+  display:none;
+  text-align:center;
+  margin-top:25px;
+  padding:20px;
+  background:#eef2ff;
+  border-radius:12px;
+  font-size:20px;
+}
+.correct {background:#bbf7d0 !important}
+.wrong {background:#fecaca !important}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>💻 PHP тілінен тест</h1>
+<p class="subtitle">Информатика пәні бойынша білімді тексеру</p>
+
+<div class="info">
+  <b>Тест ережесі:</b><br>
+  • Барлығы 20 сұрақ<br>
+  • Әр сұрақта бір дұрыс жауап бар<br>
+  • Соңында нәтиже көрсетіледі
+</div>
+
+<form id="quiz">
+
+<div id="questions"></div>
+
+<button type="button" onclick="checkTest()">Тестті аяқтау</button>
+<button type="reset" onclick="resetTest()">Қайта бастау</button>
+
+</form>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+const questions = [
+["PHP дегеніміз не?",["Графикалық редактор","Бағдарламалау тілі","Операциялық жүйе","Антивирус"],1],
+["PHP тілінің негізгі қолданылу саласы қандай?",["Веб-сайт жасау","Видео монтаждау","Сурет салу","Музыка тыңдау"],0],
+["PHP коды қандай тегтен басталады?",["<html>","<script>","<?php","<style>"],2],
+["PHP файлдарының кеңейтілімі қандай?",[".html",".css",".js",".php"],3],
+["PHP тілін кім жасаған?",["Марк Цукерберг","Расмус Лердорф","Билл Гейтс","Стив Джобс"],1],
+["PHP-де айнымалы қандай таңбадан басталады?",["#","@","$","&"],2],
+["PHP-де экранға ақпарат шығару үшін қандай команда қолданылады?",["echo","printscreen","write","show"],0],
+["PHP қандай тіл түріне жатады?",["Серверлік бағдарламалау тілі","Графикалық тіл","Машиналық тіл","Операциялық жүйе"],0],
+["PHP-де түсініктеме жазу үшін қай таңба қолданылады?",["//","**","##","&&"],0],
+["PHP-де жолдық мәлімет қандай тырнақшаға жазылады?",["Тек жақшаға","Бір немесе қос тырнақшаға","Фигуралық жақшаға","Тік жақшаға"],1],
+["PHP-де қосу амалы қалай жазылады?",["-","*","+","/"],2],
+["PHP-де шартты оператор қалай жазылады?",["if","for","echo","while"],0],
+["PHP-де цикл ұйымдастыру үшін қандай оператор қолданылады?",["echo","if","for","return"],2],
+["PHP-де массив қандай функциямен жасалады?",["array()","echo()","print()","start()"],0],
+["PHP-де функцияны жариялау үшін қандай сөз қолданылады?",["function","define","create","start"],0],
+["PHP-де теңдікті тексеру операторы қайсы?",["=","==","+","%"],1],
+["PHP-де деректерді MySQL базасымен байланыстыруға бола ма?",["Жоқ","Тек суреттерді","Иә","Тек видеоларды"],2],
+["PHP коды қай жерде орындалады?",["Серверде","Мониторда","Пернетақтада","Принтерде"],0],
+["PHP-де мәліметтердің бүтін сан түрі қалай аталады?",["String","Integer","Boolean","Array"],1],
+["PHP тілінде логикалық мәндер қандай?",["Yes және No","Start және Stop","True және False","On және Off"],2]
+];
+
+const letters = ["A","B","C","D"];
+const area = document.getElementById("questions");
+
+questions.forEach((q,i) => {
+  let html = `<div class="question" id="q${i}">
+  <h3>${i+1}. ${q[0]}</h3>`;
+
+  q[1].forEach((answer,j) => {
+    html += `
+    <label>
+      <input type="radio" name="question${i}" value="${j}">
+      ${letters[j]}) ${answer}
+    </label>`;
+  });
+
+  html += `</div>`;
+  area.innerHTML += html;
+});
+
+function checkTest() {
+  let score = 0;
+  let unanswered = 0;
+
+  questions.forEach((q,i) => {
+    const selected = document.querySelector(
+      'input[name="question'+i+'"]:checked'
+    );
+
+    const labels = document.querySelectorAll(`#q${i} label`);
+
+    labels.forEach((label,j) => {
+      label.classList.remove("correct","wrong");
+      if(j === q[2]) label.classList.add("correct");
+    });
+
+    if(selected) {
+      if(Number(selected.value) === q[2]) {
+        score++;
+      } else {
+        labels[Number(selected.value)].classList.add("wrong");
+      }
+    } else {
+      unanswered++;
+    }
+  });
+
+  let percent = score * 5;
+
+  let message = score >= 18 ? "Өте жақсы! 🏆" :
+                score >= 15 ? "Жақсы нәтиже! 👏" :
+                score >= 10 ? "Қанағаттанарлық! 👍" :
+                "Тағы да дайындал! 💪";
+
+  const result = document.getElementById("result");
+  result.style.display = "block";
+  result.innerHTML = `
+    <h2>Тест аяқталды!</h2>
+    <h1>${score} / 20</h1>
+    <p>Нәтиже: ${percent}%</p>
+    <p>${message}</p>
+    <p>Жауап берілмеген сұрақ: ${unanswered}</p>
+    <p>Жасыл түс – дұрыс жауап, қызыл түс – қате жауап.</p>
+  `;
+
+  result.scrollIntoView({behavior:"smooth"});
+}
+
+function resetTest() {
+  document.getElementById("result").style.display = "none";
+  document.querySelectorAll("label").forEach(label => {
+    label.classList.remove("correct","wrong");
+  });
+}
+</script>
+
+</body>
+</html>
